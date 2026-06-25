@@ -1,0 +1,68 @@
+# Gradle
+.gradle/
+build/
+**/build/
+
+# Local Gradle files
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Android generated files
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.ap_
+*.aab
+*.dex
+
+# Kotlin
+.kotlin/
+
+# Java / JVM
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# Keystore / signing files
+*.jks
+*.keystore
+keystore.properties
+
+# Google services / Firebase
+google-services.json
+
+# NDK
+obj/
+libs/
+
+# Test / coverage
+coverage/
+htmlReport/
+test-results/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
