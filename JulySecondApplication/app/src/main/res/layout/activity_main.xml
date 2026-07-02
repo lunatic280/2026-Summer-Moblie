@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:alignmentMode="alignMargins"
+        android:columnCount="3"
+        android:rowCount="5"
+        android:useDefaultMargins="true">
+
+        <Button
+            style="@style/widget_july_second_application_keypad_number_button"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:text="@string/keypad_1" />
+
+        <Button
+            style="@style/widget_july_second_application_keypad_number_button"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:text="@string/keypad_2" />
+
+        <Button
+            style="@style/widget_july_second_application_keypad_number_button"
+            android:layout_row="0"
+            android:layout_column="2"
+            android:text="@string/keypad_3" />
+
+        <Button
+            style="@style/widget_july_second_application_keypad_number_button"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:text="@string/keypad_4" />
+
+        <Button
+            style="@style/widget_july_second_application_keypad_number_button"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:text="@string/keypad_5" />
+
+        <Button
+            style="@style/widget_july_second_application_keypad_number_button"
+            android:layout_row="1"
+            android:layout_column="2"
+            android:text="@string/keypad_6" />
+
+        <Button
+            style="@style/widget_july_second_application_keypad_number_button"
+            android:layout_row="2"
+            android:layout_column="0"
+            android:text="@string/keypad_7" />
+
+        <Button
+            style="@style/widget_july_second_application_keypad_number_button"
+            android:layout_row="2"
+            android:layout_column="1"
+            android:text="@string/keypad_8" />
+
+        <Button
+            style="@style/widget_july_second_application_keypad_number_button"
+            android:layout_row="2"
+            android:layout_column="2"
+            android:text="@string/keypad_9" />
+
+        <Button
+            style="@style/widget_july_second_application_keypad_number_button"
+            android:layout_row="3"
+            android:layout_column="0"
+            android:text="@string/keypad_star" />
+
+        <Button
+            style="@style/widget_july_second_application_keypad_number_button"
+            android:layout_row="3"
+            android:layout_column="1"
+            android:text="@string/keypad_0" />
+
+        <Button
+            style="@style/widget_july_second_application_keypad_number_button"
+            android:layout_row="3"
+            android:layout_column="2"
+            android:text="@string/keypad_hash" />
+
+        <Button
+            style="@style/widget_july_second_application_keypad_action_button"
+            android:layout_row="4"
+            android:layout_column="0"
+            android:text="@string/action_video_call" />
+
+        <Button
+            style="@style/widget_july_second_application_keypad_action_button"
+            android:layout_row="4"
+            android:layout_column="1"
+            android:text="@string/action_dialing" />
+
+        <Button
+            style="@style/widget_july_second_application_keypad_delete_button"
+            android:layout_row="4"
+            android:layout_column="2"
+            android:text="@string/action_delete" />
+
+    </GridLayout>
+</LinearLayout>

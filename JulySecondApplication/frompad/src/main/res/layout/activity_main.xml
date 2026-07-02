@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="연락처 추가"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:gravity="center"
+        android:text=""
+        android:textSize="30sp" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingTop="8dp"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                style="@style/widget_july_second_application_keypad_number_button"
+                android:text="@string/keypad_1" />
+
+            <Button
+                style="@style/widget_july_second_application_keypad_number_button"
+                android:text="@string/keypad_2" />
+
+            <Button
+                style="@style/widget_july_second_application_keypad_number_button"
+                android:text="@string/keypad_3" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                style="@style/widget_july_second_application_keypad_number_button"
+                android:text="@string/keypad_4" />
+
+            <Button
+                style="@style/widget_july_second_application_keypad_number_button"
+                android:text="@string/keypad_5" />
+
+            <Button
+                style="@style/widget_july_second_application_keypad_number_button"
+                android:text="@string/keypad_6" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                style="@style/widget_july_second_application_keypad_number_button"
+                android:text="@string/keypad_7" />
+
+            <Button
+                style="@style/widget_july_second_application_keypad_number_button"
+                android:text="@string/keypad_8" />
+
+            <Button
+                style="@style/widget_july_second_application_keypad_number_button"
+                android:text="@string/keypad_9" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                style="@style/widget_july_second_application_keypad_number_button"
+                android:text="@string/keypad_star" />
+
+            <Button
+                style="@style/widget_july_second_application_keypad_number_button"
+                android:text="@string/keypad_0" />
+
+            <Button
+                style="@style/widget_july_second_application_keypad_number_button"
+                android:text="@string/keypad_hash" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                style="@style/widget_july_second_application_keypad_icon_button"
+                android:contentDescription="@string/action_video_call"
+                android:src="@android:drawable/ic_menu_camera" />
+
+            <ImageButton
+                style="@style/widget_july_second_application_keypad_icon_button"
+                android:contentDescription="@string/action_dialing"
+                android:src="@android:drawable/ic_menu_call" />
+
+            <ImageButton
+                style="@style/widget_july_second_application_keypad_delete_button"
+                android:contentDescription="@string/action_delete"
+                android:src="@android:drawable/ic_menu_delete" />
+        </TableRow>
+
+    </TableLayout>
+</LinearLayout>

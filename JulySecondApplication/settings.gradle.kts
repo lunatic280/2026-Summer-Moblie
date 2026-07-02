@@ -25,3 +25,6 @@ dependencyResolutionManagement {
 rootProject.name = "JulySecondApplication"
 include(":app")
 include(":gravitiyexam")
+include(":relativeexam")
+include(":frameexam")
+include(":frompad")
