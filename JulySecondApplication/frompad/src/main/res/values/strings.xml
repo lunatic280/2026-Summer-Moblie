@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">FromPad</string>
+    <string name="keypad_1">1</string>
+    <string name="keypad_2">2\nABC</string>
+    <string name="keypad_3">3\nDEF</string>
+    <string name="keypad_4">4\nGHI</string>
+    <string name="keypad_5">5\nJKL</string>
+    <string name="keypad_6">6\nMNO</string>
+    <string name="keypad_7">7\nPQRS</string>
+    <string name="keypad_8">8\nTUV</string>
+    <string name="keypad_9">9\nWXYZ</string>
+    <string name="keypad_star">*</string>
+    <string name="keypad_0">0</string>
+    <string name="keypad_hash">#</string>
+    <string name="action_video_call">영상통화</string>
+    <string name="action_dialing">다이얼링</string>
+    <string name="action_delete">삭제</string>
+</resources>

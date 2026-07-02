@@ -1,0 +1,28 @@
+<resources>
+    <style name="widget_july_second_application_keypad_number_button">
+        <item name="android:layout_width">88dp</item>
+        <item name="android:layout_height">88dp</item>
+        <item name="android:layout_margin">6dp</item>
+        <item name="android:background">@drawable/bg_keypad_number_button</item>
+        <item name="android:textColor">@color/keypad_button_text</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="widget_july_second_application_keypad_action_button" parent="widget_july_second_application_keypad_number_button">
+        <item name="android:background">@drawable/bg_keypad_action_button</item>
+        <item name="android:textColor">@color/keypad_action_text</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:maxLines">2</item>
+    </style>
+
+    <style name="widget_july_second_application_keypad_delete_button" parent="widget_july_second_application_keypad_action_button">
+        <item name="android:background">@drawable/bg_keypad_delete_button</item>
+    </style>
+</resources>
