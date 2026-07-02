@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ViewBindingExample</string>
+    <string name="view_binding_example">View Binding Example</string>
+    <string name="button">Button</string>
+    <string name="reset">처음으로</string>
+    <string name="change">변경</string>
 </resources>

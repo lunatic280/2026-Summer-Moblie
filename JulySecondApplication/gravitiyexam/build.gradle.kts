@@ -3,14 +3,15 @@ plugins {
 }
 
 android {
-    namespace = "com.job.viewbindingexample"
+    namespace = "com.job.gravitiyexam"
+    viewBinding.enable = true
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.job.viewbindingexample"
-        minSdk = 29
+        applicationId = "com.job.gravitiyexam"
+        minSdk = 37
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
@@ -28,9 +29,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-    }
-    buildFeatures {
-        viewBinding = true
     }
 }
 
