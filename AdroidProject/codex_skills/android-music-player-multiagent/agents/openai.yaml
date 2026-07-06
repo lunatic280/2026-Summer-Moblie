@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android Music Multiagent"
+  short_description: "Coordinate Android music player agents"
+  default_prompt: "Use $android-music-player-multiagent to implement the next music player milestone with the right builder and reviewer agents."
