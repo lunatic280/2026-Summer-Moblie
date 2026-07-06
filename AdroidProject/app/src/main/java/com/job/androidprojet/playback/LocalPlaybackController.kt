@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
+import com.job.androidprojet.data.SampleMusicCatalog
 import com.job.androidprojet.model.Music
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
@@ -44,6 +45,7 @@ class LocalPlaybackController(
     private var controllerFuture: ListenableFuture<MediaController>? = null
     private var controller: MediaController? = null
     private var currentMusic: Music? = null
+    private val playableMusic = SampleMusicCatalog.songs
     private var pendingControllerAction: ((MediaController) -> Unit)? = null
 
     private val _playbackState = MutableStateFlow(LocalPlaybackState())
@@ -64,6 +66,9 @@ class LocalPlaybackController(
         }
 
         override fun onMediaItemTransition(mediaItem: androidx.media3.common.MediaItem?, reason: Int) {
+            currentMusic = mediaItem?.mediaId
+                ?.toLongOrNull()
+                ?.let(::musicById)
             emitPlaybackState()
         }
     }
@@ -87,7 +92,18 @@ class LocalPlaybackController(
 
         currentMusic = music
         withController { player ->
-            player.setMediaItem(mediaItem)
+            val mediaItems = playableMusic.mapNotNull { catalogMusic ->
+                catalogMusic.toLocalMediaItem(appContext)
+            }
+            val startIndex = mediaItems.indexOfFirst { item ->
+                item.mediaId == mediaItem.mediaId
+            }.takeIf { index -> index >= 0 } ?: 0
+
+            if (mediaItems.isNotEmpty()) {
+                player.setMediaItems(mediaItems, startIndex, 0L)
+            } else {
+                player.setMediaItem(mediaItem)
+            }
             player.prepare()
             player.play()
             emitPlaybackState()
@@ -145,9 +161,10 @@ class LocalPlaybackController(
     private fun emitPlaybackState() {
         val player = controller
         val mediaId = player?.currentMediaItem?.mediaId?.toLongOrNull()
-        val currentMusicId = currentMusic?.id ?: mediaId
+        val currentMusicId = mediaId ?: currentMusic?.id
+        val currentMusicFromPlayer = mediaId?.let(::musicById) ?: currentMusic
         val duration = player?.duration?.takeIf { duration -> duration > 0L }
-            ?: currentMusic?.durationMillis
+            ?: currentMusicFromPlayer?.durationMillis
             ?: 0L
         val position = player?.currentPosition?.coerceAtLeast(0L) ?: 0L
 
@@ -185,6 +202,10 @@ class LocalPlaybackController(
         } else {
             pendingControllerAction = action
         }
+    }
+
+    private fun musicById(musicId: Long): Music? {
+        return playableMusic.firstOrNull { music -> music.id == musicId }
     }
 
     private companion object {
