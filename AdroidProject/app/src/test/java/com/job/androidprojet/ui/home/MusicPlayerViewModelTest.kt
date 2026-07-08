@@ -1,5 +1,7 @@
 package com.job.androidprojet.ui.home
 
+import com.job.androidprojet.data.online.OnlineMusicResult
+import com.job.androidprojet.data.online.OnlineMusicSource
 import com.job.androidprojet.model.Music
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -7,6 +9,14 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MusicPlayerViewModelTest {
+    @Test
+    fun initialState_hasNoCurrentTrackBeforeSelection() {
+        val viewModel = MusicPlayerViewModel(initialMusicList = testMusic)
+
+        assertEquals(null, viewModel.uiState.value.currentMusic)
+        assertFalse(viewModel.uiState.value.isPlaying)
+    }
+
     @Test
     fun updateSearchQuery_filtersByTitleArtistAndAlbum() {
         val viewModel = MusicPlayerViewModel(initialMusicList = testMusic)
@@ -32,6 +42,35 @@ class MusicPlayerViewModelTest {
             listOf("Study Beats"),
             viewModel.uiState.value.recentMusic.map { music -> music.title },
         )
+    }
+
+    @Test
+    fun selectOnlinePreview_setsCurrentTrackAndUsesThirtySecondDuration() {
+        val viewModel = MusicPlayerViewModel(initialMusicList = testMusic)
+
+        viewModel.selectOnlinePreview(
+            result = testPreviewResults.first(),
+            recommendations = testPreviewResults,
+        )
+
+        assertEquals("Preview One", viewModel.uiState.value.currentMusic?.title)
+        assertTrue(viewModel.uiState.value.currentMusic?.isOnlinePreview == true)
+        assertEquals(30_000L, viewModel.uiState.value.currentMusic?.durationMillis)
+        assertTrue(viewModel.uiState.value.isPlaying)
+    }
+
+    @Test
+    fun nextTrack_whenOnlinePreviewSelected_usesPreviewQueue() {
+        val viewModel = MusicPlayerViewModel(initialMusicList = testMusic)
+
+        viewModel.selectOnlinePreview(
+            result = testPreviewResults.first(),
+            recommendations = testPreviewResults,
+        )
+        viewModel.nextTrack()
+
+        assertEquals("Preview Two", viewModel.uiState.value.currentMusic?.title)
+        assertTrue(viewModel.uiState.value.currentMusic?.isOnlinePreview == true)
     }
 
     @Test
@@ -126,6 +165,7 @@ class MusicPlayerViewModelTest {
     fun updateProgress_clampsToValidRange() {
         val viewModel = MusicPlayerViewModel(initialMusicList = testMusic)
 
+        viewModel.selectMusic(testMusic.first())
         viewModel.updateProgress(1.4f)
 
         assertEquals(1f, viewModel.uiState.value.playbackProgress)
@@ -173,6 +213,25 @@ class MusicPlayerViewModelTest {
                 albumImage = "album_deep_focus",
                 fileName = "sample_deep_focus.mp3",
                 durationMillis = 204_000L,
+            ),
+        )
+
+        val testPreviewResults = listOf(
+            OnlineMusicResult(
+                id = "preview-1",
+                title = "Preview One",
+                artist = "API Artist",
+                album = "API Album",
+                source = OnlineMusicSource.ITunes,
+                previewUrl = "https://example.com/preview-one.m4a",
+            ),
+            OnlineMusicResult(
+                id = "preview-2",
+                title = "Preview Two",
+                artist = "API Artist",
+                album = "API Album",
+                source = OnlineMusicSource.ITunes,
+                previewUrl = "https://example.com/preview-two.m4a",
             ),
         )
     }

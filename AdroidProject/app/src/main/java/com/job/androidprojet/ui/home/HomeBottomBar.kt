@@ -29,12 +29,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.job.androidprojet.data.online.OnlineMusicResult
 import com.job.androidprojet.model.Music
 
 @Composable
 internal fun HomeBottomBar(
     currentMusic: Music?,
     isPlaying: Boolean,
+    currentPreview: OnlineMusicResult?,
+    isPreviewPlaying: Boolean,
     selectedDestination: HomeDestination,
     onTogglePlay: () -> Unit,
     onPrevious: () -> Unit,
@@ -48,15 +52,19 @@ internal fun HomeBottomBar(
             .fillMaxWidth()
             .background(HomeBackground),
     ) {
-        if (currentMusic != null) {
-            MiniPlayerBar(
-                music = currentMusic,
-                isPlaying = isPlaying,
-                onTogglePlay = onTogglePlay,
-                onPrevious = onPrevious,
-                onNext = onNext,
-                onOpenPlayer = onOpenPlayer,
-            )
+        if (currentPreview != null && isPreviewPlaying) {
+            PreviewMiniPlayerBar(preview = currentPreview)
+        } else {
+            if (currentMusic != null) {
+                MiniPlayerBar(
+                    music = currentMusic,
+                    isPlaying = isPlaying,
+                    onTogglePlay = onTogglePlay,
+                    onPrevious = onPrevious,
+                    onNext = onNext,
+                    onOpenPlayer = onOpenPlayer,
+                )
+            }
         }
 
         NavigationBar(
@@ -96,6 +104,91 @@ internal fun HomeBottomBar(
 }
 
 @Composable
+private fun PreviewMiniPlayerBar(
+    preview: OnlineMusicResult,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(8.dp),
+        color = HomeSurfaceElevated,
+        shadowElevation = 6.dp,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+                .semantics(mergeDescendants = true) {
+                    contentDescription = "Playing preview, ${preview.title} by ${preview.artist}"
+                },
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(RoundedCornerShape(7.dp))
+                    .background(HomeSurfaceVariant),
+                contentAlignment = Alignment.Center,
+            ) {
+                if (preview.artworkUrl != null) {
+                    AsyncImage(
+                        model = preview.artworkUrl,
+                        contentDescription = null,
+                        modifier = Modifier.matchParentSize(),
+                    )
+                } else {
+                    Text(
+                        text = "PR",
+                        color = HomeTextPrimary,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                Text(
+                    text = preview.title,
+                    color = HomeTextPrimary,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    text = "${preview.artist} - 30s preview",
+                    color = HomeTextSecondary,
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(HomeAccent),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = "ON",
+                    color = Color(0xFF06100A),
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                )
+            }
+        }
+    }
+}
+
+@Composable
 internal fun MiniPlayerBar(
     music: Music,
     isPlaying: Boolean,
@@ -105,6 +198,17 @@ internal fun MiniPlayerBar(
     onOpenPlayer: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val itemLabel = if (music.isOnlinePreview) {
+        "API preview clip"
+    } else {
+        "local sample track"
+    }
+    val subtitle = if (music.isOnlinePreview) {
+        "${music.artist} - 30s API preview"
+    } else {
+        music.artist
+    }
+
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -135,7 +239,7 @@ internal fun MiniPlayerBar(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                AlbumPlaceholder(
+                MusicArtwork(
                     music = music,
                     modifier = Modifier.size(44.dp),
                     cornerRadius = 7.dp,
@@ -153,7 +257,7 @@ internal fun MiniPlayerBar(
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(
-                        text = music.artist,
+                        text = subtitle,
                         color = HomeTextSecondary,
                         style = MaterialTheme.typography.bodySmall,
                         maxLines = 1,
@@ -167,22 +271,22 @@ internal fun MiniPlayerBar(
             ) {
                 MiniControl(
                     label = "<<",
-                    contentDescription = "Previous local track",
+                    contentDescription = "Previous $itemLabel",
                     onClick = onPrevious,
                 )
                 MiniControl(
                     label = if (isPlaying) "II" else ">",
                     contentDescription = if (isPlaying) {
-                        "Pause local track"
+                        "Pause $itemLabel"
                     } else {
-                        "Play local track"
+                        "Play $itemLabel"
                     },
                     emphasized = true,
                     onClick = onTogglePlay,
                 )
                 MiniControl(
                     label = ">>",
-                    contentDescription = "Next local track",
+                    contentDescription = "Next $itemLabel",
                     onClick = onNext,
                 )
             }

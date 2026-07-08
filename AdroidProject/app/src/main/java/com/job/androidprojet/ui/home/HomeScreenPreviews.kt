@@ -58,7 +58,7 @@ private fun HomeScreenSearchPreview() {
     ) {
         HomeScreen(
             musicList = SampleMusicCatalog.songs,
-            initialDestinationName = "Search",
+            initialDestination = HomeDestination.Search,
             initialSearchQuery = "drive",
         )
     }
@@ -79,7 +79,7 @@ private fun HomeScreenSearchEmptyPreview() {
     ) {
         HomeScreen(
             musicList = SampleMusicCatalog.songs,
-            initialDestinationName = "Search",
+            initialDestination = HomeDestination.Search,
             initialSearchQuery = "zzzz",
         )
     }
@@ -100,7 +100,7 @@ private fun HomeScreenLibraryPreview() {
     ) {
         HomeScreen(
             musicList = SampleMusicCatalog.songs,
-            initialDestinationName = "Library",
+            initialDestination = HomeDestination.Library,
             initialFilterName = "Favorites",
         )
     }
@@ -121,7 +121,7 @@ private fun HomeScreenPlayerPreview() {
     ) {
         HomeScreen(
             musicList = SampleMusicCatalog.songs,
-            initialDestinationName = "Player",
+            initialDestination = HomeDestination.Player,
         )
     }
 }
@@ -141,7 +141,7 @@ private fun HomeScreenPlayerCompactPreview() {
     ) {
         HomeScreen(
             musicList = SampleMusicCatalog.songs,
-            initialDestinationName = "Player",
+            initialDestination = HomeDestination.Player,
         )
     }
 }
@@ -163,7 +163,7 @@ private fun HomeScreenLibraryNoFavoritesPreview() {
             musicList = SampleMusicCatalog.songs.map { music ->
                 music.copy(isFavorite = false)
             },
-            initialDestinationName = "Library",
+            initialDestination = HomeDestination.Library,
             initialFilterName = "Favorites",
         )
     }
@@ -237,6 +237,42 @@ private fun PlayerDetailCompactLongTextPreview() {
                 positionMillis = 138_000L,
                 progress = 0.38f,
                 queuePreview = SampleMusicCatalog.songs.take(2),
+                onProgressChange = {},
+                onTogglePlay = {},
+                onPrevious = {},
+                onNext = {},
+                onToggleFavorite = {},
+                onQueueTrackClick = {},
+            )
+        }
+    }
+}
+
+@Preview(
+    name = "Player Detail API Preview Error",
+    showBackground = true,
+    backgroundColor = 0xFF0E1411,
+    widthDp = 320,
+    heightDp = 720,
+)
+@Composable
+private fun PlayerDetailApiPreviewErrorPreview() {
+    AndroidProjetTheme(
+        darkTheme = true,
+        dynamicColor = false,
+    ) {
+        Box(
+            modifier = Modifier
+                .background(HomeBackground)
+                .padding(16.dp),
+        ) {
+            PlayerDetailScreen(
+                music = previewClipMusic,
+                isPlaying = false,
+                positionMillis = 0L,
+                progress = 0f,
+                queuePreview = listOf(previewClipMusic.copy(id = -102L, title = "Second API Clip")),
+                errorMessage = "This 30-second API preview could not be played. Check the network or choose another preview.",
                 onProgressChange = {},
                 onTogglePlay = {},
                 onPrevious = {},
@@ -356,6 +392,29 @@ private fun MiniPlayerCompactLongTextPreview() {
 }
 
 @Preview(
+    name = "Mini Player API Preview Compact",
+    showBackground = true,
+    backgroundColor = 0xFF0E1411,
+    widthDp = 320,
+)
+@Composable
+private fun MiniPlayerApiPreviewCompactPreview() {
+    AndroidProjetTheme(
+        darkTheme = true,
+        dynamicColor = false,
+    ) {
+        MiniPlayerBar(
+            music = previewClipMusic,
+            isPlaying = true,
+            onTogglePlay = {},
+            onPrevious = {},
+            onNext = {},
+            onOpenPlayer = {},
+        )
+    }
+}
+
+@Preview(
     name = "Home Screen Empty",
     showBackground = true,
     backgroundColor = 0xFF0E1411,
@@ -369,3 +428,17 @@ private fun HomeScreenEmptyPreview() {
         HomeScreen(musicList = emptyList())
     }
 }
+
+private val previewClipMusic = Music(
+    id = -101L,
+    title = "API Preview Clip With A Long Title",
+    artist = "Online Metadata Artist",
+    album = "iTunes preview",
+    albumImage = "online_preview",
+    fileName = "https://example.com/preview.m4a",
+    durationMillis = 30_000L,
+    previewUrl = "https://example.com/preview.m4a",
+    sourceLabel = "iTunes preview",
+    onlinePreviewId = "preview-101",
+    isOnlinePreview = true,
+)

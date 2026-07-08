@@ -2,11 +2,18 @@ package com.job.androidprojet.ui.home
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import com.job.androidprojet.data.online.OnlineMusicResult
+import com.job.androidprojet.data.online.OnlineMusicSearchState
 import com.job.androidprojet.model.Music
 
 internal fun LazyListScope.homeContent(
     music: List<Music>,
     recentMusic: List<Music>,
+    homePreviewState: OnlineMusicSearchState,
+    previewMusicId: String?,
+    previewIsPlaying: Boolean,
+    onPreviewToggle: ((OnlineMusicResult, List<OnlineMusicResult>) -> Unit)?,
+    onHomePreviewRetry: (() -> Unit)?,
     onMusicClick: (Music) -> Unit,
 ) {
     if (music.isEmpty()) {
@@ -20,6 +27,14 @@ internal fun LazyListScope.homeContent(
         SectionTitle(title = "Jump back in")
     }
 
+    homePreviewContent(
+        homePreviewState = homePreviewState,
+        previewMusicId = previewMusicId,
+        previewIsPlaying = previewIsPlaying,
+        onPreviewToggle = onPreviewToggle,
+        onRetry = onHomePreviewRetry,
+    )
+
     item {
         QuickAccessGrid(
             music = music.take(6),
@@ -32,8 +47,18 @@ internal fun LazyListScope.homeContent(
     item {
         HorizontalMusicSection(
             title = "Recent selections",
-            music = visibleRecentMusic.ifEmpty { music.take(5) },
+            music = visibleRecentMusic,
             onMusicClick = onMusicClick,
+            emptyMessage = "Select a track to build your recent history",
+        )
+    }
+
+    item {
+        HorizontalMusicSection(
+            title = "Favorites",
+            music = music.filter { track -> track.isFavorite },
+            onMusicClick = onMusicClick,
+            emptyMessage = "Tap Save on the player screen to keep tracks here",
         )
     }
 
@@ -65,6 +90,32 @@ internal fun LazyListScope.homeContent(
 }
 
 internal fun LazyListScope.searchContent(
+    music: List<Music>,
+    query: String,
+    onlineSearchState: OnlineMusicSearchState,
+    previewMusicId: String?,
+    previewIsPlaying: Boolean,
+    onPreviewToggle: ((OnlineMusicResult, List<OnlineMusicResult>) -> Unit)?,
+    onOnlineSearchRetry: (() -> Unit)?,
+    onMusicClick: (Music) -> Unit,
+) {
+    localSearchResultsContent(
+        music = music,
+        query = query,
+        onMusicClick = onMusicClick,
+    )
+
+    onlineSearchContent(
+        query = query,
+        onlineSearchState = onlineSearchState,
+        previewMusicId = previewMusicId,
+        previewIsPlaying = previewIsPlaying,
+        onPreviewToggle = onPreviewToggle,
+        onRetry = onOnlineSearchRetry,
+    )
+}
+
+private fun LazyListScope.localSearchResultsContent(
     music: List<Music>,
     query: String,
     onMusicClick: (Music) -> Unit,

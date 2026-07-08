@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.job.androidprojet.model.Music
 
 @Composable
@@ -123,7 +125,7 @@ private fun QuickAccessTile(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            AlbumPlaceholder(
+            MusicArtwork(
                 music = music,
                 modifier = Modifier.size(64.dp),
                 cornerRadius = 8.dp,
@@ -197,7 +199,7 @@ private fun RecommendationCard(
             },
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        AlbumPlaceholder(
+        MusicArtwork(
             music = music,
             modifier = Modifier
                 .fillMaxWidth()
@@ -259,7 +261,7 @@ internal fun MusicListRow(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            AlbumPlaceholder(
+            MusicArtwork(
                 music = music,
                 modifier = Modifier.size(56.dp),
             )
@@ -409,6 +411,40 @@ internal fun EmptyMusicList(
             style = MaterialTheme.typography.bodyMedium,
         )
     }
+}
+
+@Composable
+internal fun MusicArtwork(
+    music: Music,
+    modifier: Modifier = Modifier,
+    cornerRadius: Dp = 8.dp,
+    contentScale: ContentScale = ContentScale.Crop,
+) {
+    val artworkUrl = music.artworkModel()
+
+    Box(
+        modifier = modifier.clip(RoundedCornerShape(cornerRadius)),
+        contentAlignment = Alignment.Center,
+    ) {
+        AlbumPlaceholder(
+            music = music,
+            modifier = Modifier.matchParentSize(),
+            cornerRadius = cornerRadius,
+        )
+        if (artworkUrl != null) {
+            AsyncImage(
+                model = artworkUrl,
+                contentDescription = null,
+                contentScale = contentScale,
+                modifier = Modifier.matchParentSize(),
+            )
+        }
+    }
+}
+
+private fun Music.artworkModel(): String? {
+    return artworkUrl?.takeIf { url -> url.isNotBlank() }
+        ?: albumImage.takeIf { image -> image.startsWith(prefix = "https://", ignoreCase = true) }
 }
 
 @Composable
