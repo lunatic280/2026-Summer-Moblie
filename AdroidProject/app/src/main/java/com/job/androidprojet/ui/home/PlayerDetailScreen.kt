@@ -38,6 +38,7 @@ internal fun PlayerDetailScreen(
     positionMillis: Long,
     progress: Float,
     queuePreview: List<Music>,
+    errorMessage: String? = null,
     onProgressChange: (Float) -> Unit,
     onTogglePlay: () -> Unit,
     onPrevious: () -> Unit,
@@ -48,7 +49,7 @@ internal fun PlayerDetailScreen(
 ) {
     if (music == null) {
         EmptyMusicList(
-            message = "No local tracks available",
+            message = errorMessage ?: "No local sample track selected",
             modifier = modifier,
         )
         return
@@ -59,6 +60,9 @@ internal fun PlayerDetailScreen(
         verticalArrangement = Arrangement.spacedBy(22.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        if (errorMessage != null) {
+            EmptyMusicList(message = errorMessage)
+        }
         PlayerHeader(music = music)
         PlayerAlbumArt(music = music)
         PlayerMetadata(
@@ -73,12 +77,14 @@ internal fun PlayerDetailScreen(
         )
         PlayerControls(
             isPlaying = isPlaying,
+            isOnlinePreview = music.isOnlinePreview,
             onPrevious = onPrevious,
             onTogglePlay = onTogglePlay,
             onNext = onNext,
         )
         QueuePreview(
             music = queuePreview,
+            isOnlinePreviewQueue = music.isOnlinePreview,
             onMusicClick = onQueueTrackClick,
         )
     }
@@ -121,7 +127,7 @@ private fun PlayerAlbumArt(
         modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center,
     ) {
-        AlbumPlaceholder(
+        MusicArtwork(
             music = music,
             modifier = Modifier
                 .fillMaxWidth(0.86f)
@@ -163,15 +169,46 @@ private fun PlayerMetadata(
                 overflow = TextOverflow.Ellipsis,
             )
         }
-        FavoriteActionButton(
-            isFavorite = music.isFavorite,
-            onClick = onToggleFavorite,
+        if (music.isOnlinePreview) {
+            PreviewSourcePill(sourceLabel = music.sourceLabel)
+        } else {
+            FavoriteActionButton(
+                title = music.title,
+                isFavorite = music.isFavorite,
+                onClick = onToggleFavorite,
+            )
+        }
+    }
+}
+
+@Composable
+private fun PreviewSourcePill(
+    sourceLabel: String,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .height(44.dp)
+            .widthIn(min = 92.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(HomeSurfaceVariant)
+            .padding(horizontal = 12.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = sourceLabel,
+            color = HomeTextPrimary,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
 
 @Composable
 private fun FavoriteActionButton(
+    title: String,
     isFavorite: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -188,14 +225,18 @@ private fun FavoriteActionButton(
             .background(containerColor)
             .clickable(
                 role = Role.Button,
-                onClickLabel = label,
+                onClickLabel = if (isFavorite) {
+                    "Remove $title from saved local tracks"
+                } else {
+                    "Save $title to local favorites"
+                },
                 onClick = onClick,
             )
             .semantics {
                 contentDescription = if (isFavorite) {
-                    "Remove ${label.lowercase()} mark"
+                    "Remove $title from saved local tracks"
                 } else {
-                    "Save local track"
+                    "Save $title to local favorites"
                 }
             }
             .padding(horizontal = 12.dp),
@@ -230,7 +271,7 @@ private fun PlayerTimeline(
             modifier = Modifier
                 .fillMaxWidth()
                 .semantics {
-                    contentDescription = "Playback position"
+                    contentDescription = "Playback position ${formatDuration(positionMillis)} of ${formatDuration(durationMillis)}"
                 },
             valueRange = 0f..1f,
             colors = SliderDefaults.colors(
@@ -263,11 +304,14 @@ private fun PlayerTimeline(
 @Composable
 private fun PlayerControls(
     isPlaying: Boolean,
+    isOnlinePreview: Boolean,
     onPrevious: () -> Unit,
     onTogglePlay: () -> Unit,
     onNext: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val itemLabel = if (isOnlinePreview) "API preview clip" else "local sample track"
+
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -275,22 +319,22 @@ private fun PlayerControls(
     ) {
         PlayerControlButton(
             label = "<<",
-            contentDescription = "Previous local track",
+            contentDescription = "Previous $itemLabel",
             onClick = onPrevious,
         )
         PlayerControlButton(
             label = if (isPlaying) "II" else ">",
             contentDescription = if (isPlaying) {
-                "Pause local track"
+                "Pause $itemLabel"
             } else {
-                "Play local track"
+                "Play $itemLabel"
             },
             emphasized = true,
             onClick = onTogglePlay,
         )
         PlayerControlButton(
             label = ">>",
-            contentDescription = "Next local track",
+            contentDescription = "Next $itemLabel",
             onClick = onNext,
         )
     }
@@ -341,19 +385,31 @@ private fun PlayerControlButton(
 @Composable
 private fun QueuePreview(
     music: List<Music>,
+    isOnlinePreviewQueue: Boolean,
     onMusicClick: (Music) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val subtitle = if (isOnlinePreviewQueue) {
+        "30-second API preview queue, separate from local samples"
+    } else {
+        "From the local sample catalog"
+    }
+    val emptyMessage = if (isOnlinePreviewQueue) {
+        "No more API preview clips"
+    } else {
+        "No more local sample tracks"
+    }
+
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         SectionTitle(
             title = "Up next",
-            subtitle = "From the sample catalog",
+            subtitle = subtitle,
         )
         if (music.isEmpty()) {
-            EmptyMusicList(message = "No more local tracks")
+            EmptyMusicList(message = emptyMessage)
         } else {
             music.forEach { track ->
                 MusicListRow(

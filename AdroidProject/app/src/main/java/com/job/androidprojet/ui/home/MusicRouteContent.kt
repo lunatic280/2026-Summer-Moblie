@@ -15,6 +15,8 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +42,8 @@ internal fun MusicRouteContent(
     onQueryChange: (String) -> Unit,
     onFilterSelected: (MusicContentFilter) -> Unit,
     modifier: Modifier = Modifier,
+    canPinWidget: Boolean = false,
+    onPinWidgetClick: (() -> Unit)? = null,
     content: LazyListScope.() -> Unit,
 ) {
     LazyColumn(
@@ -53,7 +57,11 @@ internal fun MusicRouteContent(
         verticalArrangement = Arrangement.spacedBy(18.dp),
     ) {
         item {
-            HomeHeader(trackCount = trackCount)
+            HomeHeader(
+                trackCount = trackCount,
+                canPinWidget = canPinWidget && onPinWidgetClick != null,
+                onPinWidgetClick = onPinWidgetClick,
+            )
         }
 
         item {
@@ -86,6 +94,8 @@ internal fun MusicRouteContent(
 private fun HomeHeader(
     trackCount: Int,
     modifier: Modifier = Modifier,
+    canPinWidget: Boolean = false,
+    onPinWidgetClick: (() -> Unit)? = null,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -131,6 +141,21 @@ private fun HomeHeader(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+        }
+        if (canPinWidget && onPinWidgetClick != null) {
+            Button(
+                onClick = onPinWidgetClick,
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = HomeSurfaceVariant,
+                    contentColor = HomeTextPrimary,
+                ),
+            ) {
+                Text(
+                    text = "Add widget",
+                    maxLines = 1,
+                )
+            }
         }
     }
 }
